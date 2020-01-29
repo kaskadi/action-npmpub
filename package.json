@@ -1,7 +1,7 @@
 {
   "name": "action-npmpub",
   "version": "1.0.0",
-  "description": "a template for building new GitHub Actions",
+  "description": "a GitHub Actions to automate NPM package publication",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

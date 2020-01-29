@@ -1,5 +1,12 @@
 name: 'action-npmpub'
-description: ''
+description: 'GitHub Actions to automatically publish to NPM'
+inputs:
+  username:
+    description: 'Username to commit upgraded version files on GitHub'
+    required: true
+  email:
+    description: 'Email to commit upgraded version files on GitHub'
+    required: true
 runs:
   using: 'node12'
   main: 'index.js'
