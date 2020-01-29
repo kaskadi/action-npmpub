@@ -1,5 +1,5 @@
 {
-  "name": "template-action",
+  "name": "action-npmpub",
   "version": "1.0.0",
   "description": "a template for building new GitHub Actions",
   "main": "index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kaskadi/template-action.git"
+    "url": "git+https://github.com/kaskadi/action-npmpub.git"
   },
   "keywords": [],
   "author": "Klimapartner GmbH <kontakt@klimapartner.de> (https://klimapartner.de)",
@@ -18,7 +18,7 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kaskadi/template-action/issues"
+    "url": "https://github.com/kaskadi/action-npmpub/issues"
   },
-  "homepage": "https://github.com/kaskadi/template-action#readme"
+  "homepage": "https://github.com/kaskadi/action-npmpub#readme"
 }
