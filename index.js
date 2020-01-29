@@ -3,6 +3,10 @@ const childProc = require('child_process')
 const root = process.env.GITHUB_ACTIONS ? '/home/runner/work/_actions/kaskadi/action-npmpub/master/' : './'
 const pathToScript = `${root}publish.sh`
 
+const tags = ['*patch*', '*minor*', '*major*']
+const commitMsgTag = process.env.COMMIT_MSG.slice(0, 7)
+process.env.UPDATE_TYPE = tags.includes(commitMsgTag) ? commitMsgTag.replace(new RegExp(/\*/, 'g'), '') : 'patch'
+
 childProc.exec(pathToScript, (err, stdout, stderr) => {
   console.log(stdout)
   if (err !== null) {
