@@ -24,22 +24,22 @@ You can use the following code as a new _GitHub Actions Workflow_:
 name: {YOUR-ACTION-NAME}
 on: [{YOUR-ACTION-EVENT}]
 jobs:
-publish:
-  runs-on: ubuntu-latest
-  steps:
-  - uses: actions/checkout@v2
-  - uses: actions/setup-node@v1
-    with:
-      node-version: 12
-      registry-url: https://registry.npmjs.org/
-  - name: Publish to NPM
-    uses: kaskadi/action-npmpub@master
-    with:
-      USERNAME: [{FIRST-NAME}] [{LAST-NAME}] **required**
-      EMAIL: [{GITHUB-EMAIL (for commit)}] **required**
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      COMMIT_MSG: ${{ github.event.head_commit.message }}
+  {YOUR-JOB-NAME}:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12
+        registry-url: https://registry.npmjs.org/
+    - name: {YOUR-STEP-NAME}
+      uses: kaskadi/action-npmpub@master
+      with:
+        USERNAME: [{FIRST-NAME}] [{LAST-NAME}] **required**
+        EMAIL: [{GITHUB-EMAIL (for commit)}] **required**
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        COMMIT_MSG: ${{ github.event.head_commit.message }}
 ```
 
 _USERNAME_ and _EMAIL_ are inputs used by this action to commit on your repository the upgraded files under your identity.
