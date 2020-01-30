@@ -9,9 +9,9 @@ if [ "$CURRENT_VERSION" == "$REMOTE_VERSION" ]
 then
   npm --no-git-tag-version version $UPDATE_TYPE
   CURRENT_VERSION="$(getVersion)"
+  git config --global user.name $INPUT_USERNAME
+  git config --global user.email $INPUT_EMAIL
+  git commit -am "Upgraded to $CURRENT_VERSION"
+  git push
 fi
-git config --global user.name $INPUT_USERNAME
-git config --global user.email $INPUT_EMAIL
-git commit -am "Upgraded to $CURRENT_VERSION"
-git push
 npm publish --access public
