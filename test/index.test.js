@@ -14,55 +14,55 @@ chai.should()
 
 describe('template-action', function () {
   this.timeout(5000)
-  describe('new package', function() {
+  describe('new package', function () {
     before(async function () {
       init()
     })
-    it('should publish a new package', function() {
+    it('should publish a new package', function () {
       
     })
     after(async function () {
       rimraf.sync('test/working-data')
     })
   })
-  describe('auto patch on existing package', function() {
+  describe('auto patch on existing package', function () {
     before(async function () {
       init()
     })
-    it('should auto patch an existing package', function() {
+    it('should auto patch an existing package', function () {
 
     })
     after(async function () {
       rimraf.sync('test/working-data')
     })
   })
-  describe('requested patch on existing package', function() {
+  describe('requested patch on existing package', function () {
     before(async function () {
       init('*patch*bla bla test')
     })
-    it('should patch an existing package when asked to', function() {
+    it('should patch an existing package when asked to', function () {
 
     })
     after(async function () {
       rimraf.sync('test/working-data')
     })
   })
-  describe('requested minor upgrade on existing package', function() {
+  describe('requested minor upgrade on existing package', function () {
     before(async function () {
       init('*minor*bla bla test')
     })
-    it('should upgrade minor version of an existing package when asked to', function() {
+    it('should upgrade minor version of an existing package when asked to', function () {
 
     })
     after(async function () {
       rimraf.sync('test/working-data')
     })
   })
-  describe('requested major upgrade on existing package', function() {
+  describe('requested major upgrade on existing package', function () {
     before(async function () {
       init('*major*bla bla test')
     })
-    it('should upgrade major version of an existing package when asked to', function() {
+    it('should upgrade major version of an existing package when asked to', function () {
 
     })
     after(async function () {
@@ -85,7 +85,7 @@ describe('template-action', function () {
 //   })
 // }
 
-async function init(commitMsg = '') {
+async function init (commitMsg = '') {
   await cp('test/data', 'test/working-data')
   await new Promise(resolve => setTimeout(resolve, 300)) // it seems like ncp still does some async tasks even though the ncp function returned so we wait a little until everything is copied
   process.chdir('test/working-data')
