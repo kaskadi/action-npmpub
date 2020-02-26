@@ -3,8 +3,9 @@ getVersion() {
   node -e "console.log(require('./package.json').version)"
 }
 # compare current and remote version
+PACKAGE_NAME="$(node -e "console.log(require('./package.json').name)")"
 CURRENT_VERSION="$(getVersion)"
-REMOTE_VERSION="$(npm view kaskadi-cli version)"
+REMOTE_VERSION="$(npm view $PACKAGE_NAME version)"
 if [ "$CURRENT_VERSION" == "$REMOTE_VERSION" ]
 then
   npm --no-git-tag-version version $UPDATE_TYPE
