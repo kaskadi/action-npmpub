@@ -14,7 +14,9 @@ then
     CURRENT_VERSION="$(getVersion)"
     git config --global user.name $INPUT_USERNAME
     git config --global user.email $INPUT_EMAIL
-    git commit -am "Upgraded to $CURRENT_VERSION"
+    git add package.json
+    git add package-lock.json
+    git commit -m "Upgraded to $CURRENT_VERSION"
     git push
   fi
 fi
