@@ -42,12 +42,17 @@ jobs:
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         COMMIT_MSG: ${{ github.event.head_commit.message }}
+        GPG_ID: ${{ secrets.GPG_ID }}
+        GPG_PASS: ${{ secrets.GPG_PASS }}
 ```
 
 _USERNAME_ and _EMAIL_ are inputs used by this action to commit on your repository the upgraded files under your identity.
 
 _NPM_TOKEN_ is a secret that stores a token you generated on your NPM registry with which you can **read and publish** to this registry.
 See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token.
+
+_GPG_ID_ is a secret that stores the ID of the GPG key you would like to use to sign your commit.
+_GPG_PASS_ is the passphrase used for unlocking your GPG key.
 
 **Notes:**
 - the `env` field can be copy pasted as is as long as you name your secret _NPM_TOKEN_ as well
