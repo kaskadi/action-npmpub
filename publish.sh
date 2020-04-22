@@ -16,15 +16,7 @@ then
     git config --global user.email $INPUT_EMAIL
     git add package.json
     git add package-lock.json
-    CUSTOM_MSG="Upgraded to $CURRENT_VERSION"
-    if [ "$GPG_ID" -a "$GPG_PASS" ]
-    then
-      git config --global user.signingkey $GPG_ID
-      git config --global commit.gpgsign true
-      git commit -S -m $CUSTOM_MSG <<<$GPG_PASS
-    else
-      git commit -m $CUSTOM_MSG
-    fi
+    git commit -m "Upgraded to $CURRENT_VERSION"
     git push
   fi
 fi
