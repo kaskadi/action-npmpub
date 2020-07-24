@@ -1,11 +1,14 @@
+const { execSync } = require('child_process')
+
 function main() {
   const pjson = require('./package.json')
-  const { execSync } = require('child_process')
-  if (pjson.devDependencies) {
-      Object.keys(pjson.devDependencies).forEach(dep => { execSync(`npm i -D ${dep}@latest`) }, { stdio: 'inherit' })
-  }
-  if (pjson.dependencies) {
-      Object.keys(pjson.dependencies).forEach(dep => { execSync(`npm i -S ${dep}@latest`) }, { stdio: 'inherit' })
+  updateDependencies(pjson.devDependencies)
+  updateDependencies(pjson.dependencies)
+}
+
+function updateDependencies (dependencies) {
+  if (dependencies) {
+    Object.keys(dependencies).forEach(dependency => { execSync(`npm i -D ${dependency}@latest`) }, { stdio: 'inherit' })
   }
 }
 
