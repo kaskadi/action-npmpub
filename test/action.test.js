@@ -5,7 +5,8 @@ if (!process.env.NODE_AUTH_TOKEN) {
 if (!process.env.COMMIT_MSG) {
   throw new Error('COMMIT_MSG environment variable is not defined')
 }
-// const childProc = require('child_process')
+const runAction = require('./helpers/run-action.js')
+const steps = ['pre', 'main']
 const ncp = require('ncp').ncp
 const fs = require('fs')
 const rimraf = require('rimraf')
@@ -71,20 +72,6 @@ describe('template-action', function () {
   })
 })
 
-// function execMain () {
-//   return new Promise((resolve, reject) => {
-//     childProc.exec('node index', (err, stdout, stderr) => {
-//       if (err === null) {
-//         console.log(stdout)
-//         resolve(true)
-//       } else {
-//         console.log(stderr)
-//         resolve(false)
-//       }
-//     })
-//   })
-// }
-
 async function init (commitMsg = '') {
   await cp('test/data', 'test/working-data')
   await new Promise(resolve => setTimeout(resolve, 300)) // it seems like ncp still does some async tasks even though the ncp function returned so we wait a little until everything is copied
@@ -93,7 +80,7 @@ async function init (commitMsg = '') {
   this.oldPackageName = pjson.name
   this.oldVersion = pjson.version
   process.env.COMMIT_MSG = commitMsg
-  // await execMain()
+  runAction(steps)
   process.chdir('../../')
 }
 
