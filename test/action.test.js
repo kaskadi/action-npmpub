@@ -1,10 +1,10 @@
 /* eslint-env mocha */
-if (!process.env.NODE_AUTH_TOKEN) {
-  throw new Error('NODE_AUTH_TOKEN environment variable is not defined')
-}
-if (!process.env.COMMIT_MSG) {
-  throw new Error('COMMIT_MSG environment variable is not defined')
-}
+// if (!process.env.NODE_AUTH_TOKEN) {
+//   throw new Error('NODE_AUTH_TOKEN environment variable is not defined')
+// }
+// if (!process.env.COMMIT_MSG) {
+//   throw new Error('COMMIT_MSG environment variable is not defined')
+// }
 // const runAction = require('./helpers/run-action.js')
 // const steps = ['pre', 'main']
 // const ncp = require('ncp').ncp
