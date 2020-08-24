@@ -20,4 +20,4 @@ jobs:
       run: npm test
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        COMMIT_MSG: ''
+        COMMIT_MSG: 'placeholder'
