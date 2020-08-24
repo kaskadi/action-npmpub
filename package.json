@@ -2,7 +2,7 @@
   "name": "action-npmpub",
   "version": "1.0.0",
   "description": "a GitHub Actions to automate NPM package publication",
-  "main": "index.js",
+  "main": "action.yml",
   "scripts": {
     "test": "standard --fix && mocha test/*.test.js --require test/mocha-color-setter.js",
     "coverage": "nyc npm run test"
