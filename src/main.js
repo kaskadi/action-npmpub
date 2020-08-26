@@ -1,15 +1,30 @@
-const childProc = require('child_process')
-// test if we're in a GitHub Actions context so we can still test locally how the action is behaving
-const root = process.env.GITHUB_ACTIONS && process.env.GITHUB_REPOSITORY !== 'kaskadi/action-npmpub' ? '/home/runner/work/_actions/kaskadi/action-npmpub/master/' : `${process.cwd()}/`
-const pathToScript = `${root}src/publish.sh`
+const { spawn } = require('child_process')
+const path = require('path')
 
-const tags = ['*patch*', '*minor*', '*major*']
-const commitMsgTag = process.env.COMMIT_MSG.slice(0, 7)
-process.env.UPDATE_TYPE = tags.includes(commitMsgTag) ? commitMsgTag.replace(new RegExp(/\*/, 'g'), '') : 'patch'
+async function main () {
+  const pathToScript = path.join(__dirname, 'publish.sh')
+  const tags = ['*patch*', '*minor*', '*major*']
+  const commitMsgTag = process.env.COMMIT_MSG ? process.env.COMMIT_MSG.slice(0, 7) : '*patch*'
+  process.env.UPDATE_TYPE = tags.includes(commitMsgTag) ? commitMsgTag.replace(new RegExp(/\*/, 'g'), '') : 'patch'
 
-childProc.exec(pathToScript, (err, stdout, stderr) => {
-  console.log(stdout)
-  if (err !== null) {
-    console.log(stderr)
-  }
+  await new Promise((resolve, reject) => {
+    const proc = spawn('bash', [pathToScript])
+    proc.stdout.on('data', log)
+    proc.stderr.on('data', log)
+    proc.on('error', console.log)
+    proc.on('exit', code => {
+      if (code !== 0) {
+        reject(new Error(code))
+      }
+      resolve(code)
+    })
+  })
+}
+
+function log (data) {
+  console.log(data.toString().trim())
+}
+
+main().catch(() => {
+  process.exit(1)
 })
