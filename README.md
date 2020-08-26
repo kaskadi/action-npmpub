@@ -35,19 +35,25 @@ jobs:
     - name: {YOUR-STEP-NAME}
       uses: kaskadi/action-npmpub@master
       with:
-        USERNAME: [{FIRST-NAME}] [{LAST-NAME}] **required**
-        EMAIL: [{GITHUB-EMAIL (for commit)}] **required**
+        username: {GITHUB-NAME}
+        email: {GITHUB-EMAIL}
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.{YOUR-NPM-TOKEN} }}
         COMMIT_MSG: ${{ github.event.head_commit.message }}
 ```
 
-_USERNAME_ and _EMAIL_ are inputs used by this action to commit on your repository the upgraded files under your identity.
-
-_NPM_TOKEN_ is a secret that stores a token you generated on your NPM registry with which you can **read and publish** to this registry.
-See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token.
-
 **Notes:**
-- the `env` field can be copy pasted as is as long as you name your secret _NPM_TOKEN_ as well
 - everything contained in single curly brackets (`{ }`) needs to be replaced by your desired values
 - by default, this action will publish a new _patch_ for your package. If you would like to publish a new _major_ (resp. _minor_) version for this package, just prepend your commit message with `*major*` (resp. `*minor*`). This works as well with `*patch*` even though it's not required
+
+**Inputs:**
+|    Input   | Required | Default | Description                                         |
+|:----------:|:--------:|:-------:|-----------------------------------------------------|
+| `username` |    Yes   |   N/A   | Username to commit upgraded version files on GitHub |
+|   `email`  |    Yes   |   N/A   | Email to commit upgraded version files on GitHub    |
+
+**Environment variables:**
+|      Variable     | Required | Description                                                                                                                                                                                                              |
+|:-----------------:|:--------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `NODE_AUTH_TOKEN` |    Yes   | NPM token which has **read & publish** permission. See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token. **Recommend storing it in repository secrets!** |
+|    `COMMIT_MSG`   |    Yes   | Message of the commit that triggered the action. **/!\ This should not be modified! /!\\**                                                                                                                               |
