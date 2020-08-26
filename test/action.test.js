@@ -15,9 +15,13 @@ const { assert } = require('console')
 chai.should()
 
 describe('action-npmpub', function () {
-  // this.timeout(5000)
-  it('placeholder test', function () {
-    assert(true)
+  // ******* DO NOT REMOVE THIS TEST!
+  require('./pre/tests.js')
+  // *******
+  describe('Placeholder test', function () {
+    it('should pass', function () {
+      assert(true)
+    })
   })
   // describe('new package', function () {
   //   before(async function () {
