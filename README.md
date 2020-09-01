@@ -14,7 +14,7 @@
 
 # What is this action for?
 
-It allows you to automatically publish your package to NPM.
+This action allows you to automatically publish your packages to NPM.
 
 # How to use it?
 
@@ -28,32 +28,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 12
-        registry-url: https://registry.npmjs.org/
     - name: {YOUR-STEP-NAME}
       uses: kaskadi/action-npmpub@master
       with:
-        username: {GITHUB-NAME}
-        email: {GITHUB-EMAIL}
+        username: {USERNAME-VALUE}
+        email: {EMAIL-VALUE}
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.{YOUR-NPM-TOKEN} }}
-        COMMIT_MSG: ${{ github.event.head_commit.message }}
+        NODE_AUTH_TOKEN: {NODE_AUTH_TOKEN-VALUE}
+        COMMIT_MSG: {COMMIT_MSG-VALUE}
 ```
 
-**Notes:**
-- everything contained in single curly brackets (`{ }`) needs to be replaced by your desired values
-- by default, this action will publish a new _patch_ for your package. If you would like to publish a new _major_ (resp. _minor_) version for this package, just prepend your commit message with `*major*` (resp. `*minor*`). This works as well with `*patch*` even though it's not required
+**Note:** everything contained in single curly brackets (`{ }`) needs to be replaced by your desired values
 
 **Inputs:**
 |    Input   | Required | Default | Description                                         |
-|:----------:|:--------:|:-------:|-----------------------------------------------------|
-| `username` |    Yes   |   N/A   | Username to commit upgraded version files on GitHub |
-|   `email`  |    Yes   |   N/A   | Email to commit upgraded version files on GitHub    |
+| :--------: | :------: | :-----: | :-------------------------------------------------- |
+| `username` |  `true`  |         | Username to commit upgraded version files on GitHub |
+|   `email`  |  `true`  |         | Email to commit upgraded version files on GitHub    |
 
 **Environment variables:**
 |      Variable     | Required | Description                                                                                                                                                                                                              |
-|:-----------------:|:--------:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `NODE_AUTH_TOKEN` |    Yes   | NPM token which has **read & publish** permission. See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token. **Recommend storing it in repository secrets!** |
-|    `COMMIT_MSG`   |    Yes   | Message of the commit that triggered the action. **/!\ This should not be modified! /!\\**                                                                                                                               |
+| :---------------: | :------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NODE_AUTH_TOKEN` |  `true`  | NPM token which has **read & publish** permission. See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token. **Recommend storing it in repository secrets!** |
+|    `COMMIT_MSG`   |  `true`  | Message of the commit that triggered the action. **The value needs to be `${{ github.event.head_commit.message }}`**.                                                                                                    |
+
+By default, this action will publish a new _patch_ for your package. If you would like to publish a new _major_ (resp. _minor_) version for this package, just prepend your commit message with `*major*` (resp. `*minor*`). This works as well with `*patch*` even though it's not required
