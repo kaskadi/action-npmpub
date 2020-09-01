@@ -12,8 +12,9 @@ env:
     description: 'NPM token which has **read & publish** permission. See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token. **Recommend storing it in repository secrets!**'
     required: true
   COMMIT_MSG:
-    description: 'Message of the commit that triggered the action. **The value needs to be `${{ github.event.head_commit.message }}`**.'
+    description: 'Message of the commit that triggers the action. **\/!\\ This should not be changed \/!\\**'
     required: true
+    value: ${{ github.event.head_commit.message }}
 runs:
   using: 'node12'
   pre: 'src/pre.js'
