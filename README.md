@@ -35,7 +35,7 @@ jobs:
         email: {EMAIL-VALUE}
       env:
         NODE_AUTH_TOKEN: {NODE_AUTH_TOKEN-VALUE}
-        COMMIT_MSG: {COMMIT_MSG-VALUE}
+        COMMIT_MSG: ${{ github.event.head_commit.message }}
 ```
 
 **Note:** everything contained in single curly brackets (`{ }`) needs to be replaced by your desired values
@@ -50,6 +50,6 @@ jobs:
 |      Variable     | Required | Description                                                                                                                                                                                                              |
 | :---------------: | :------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `NODE_AUTH_TOKEN` |  `true`  | NPM token which has **read & publish** permission. See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token. **Recommend storing it in repository secrets!** |
-|    `COMMIT_MSG`   |  `true`  | Message of the commit that triggered the action. **The value needs to be `${{ github.event.head_commit.message }}`**.                                                                                                    |
+|    `COMMIT_MSG`   |  `true`  | Message of the commit that triggers the action. **\/!\\ This should not be changed \/!\\**                                                                                                                               |
 
 By default, this action will publish a new _patch_ for your package. If you would like to publish a new _major_ (resp. _minor_) version for this package, just prepend your commit message with `*major*` (resp. `*minor*`). This works as well with `*patch*` even though it's not required
