@@ -1,105 +1,88 @@
 /* eslint-env mocha */
-// if (!process.env.NODE_AUTH_TOKEN) {
-//   throw new Error('NODE_AUTH_TOKEN environment variable is not defined')
-// }
-// if (!process.env.COMMIT_MSG) {
-//   throw new Error('COMMIT_MSG environment variable is not defined')
-// }
-// const runAction = require('./helpers/run-action.js')
-// const steps = ['pre', 'main']
-// const ncp = require('ncp').ncp
-// const fs = require('fs')
-// const rimraf = require('rimraf')
-const chai = require('chai')
-const { assert } = require('console')
-chai.should()
+const runAction = require('./helpers/run-action.js')
+const { writeFileSync, readFileSync, unlinkSync } = require('fs')
+const { spawnSync } = require('child_process')
+const assert = require('chai').assert
+
+const pkgData = {
+  name: 'collmex-client',
+  version: getNpmVersion('collmex-client')
+}
 
 describe('action-npmpub', function () {
+  this.timeout(30000)
   // ******* DO NOT REMOVE THIS TEST!
   require('./pre/tests.js')
   // *******
-  describe('Placeholder test', function () {
-    it('should pass', function () {
-      assert(true)
+  describe('no package', function () {
+    before(() => {
+      unlinkSync(`${process.cwd()}/test/data/package.json`)
+    })
+    it('should error if no package exists in the calling repo', async function () {
+      await test().catch(() => { assert(true) })
     })
   })
-  // describe('new package', function () {
-  //   before(async function () {
-  //     init()
-  //   })
-  //   it('should publish a new package', function () {
-  //     assert(true)
-  //   })
-  //   after(async function () {
-  //     rimraf.sync('test/working-data')
-  //   })
-  // })
-  // describe('auto patch on existing package', function () {
-  //   before(async function () {
-  //     init()
-  //   })
-  //   it('should auto patch an existing package', function () {
-  //     assert(true)
-  //   })
-  //   after(async function () {
-  //     rimraf.sync('test/working-data')
-  //   })
-  // })
-  // describe('requested patch on existing package', function () {
-  //   before(async function () {
-  //     init('*patch*bla bla test')
-  //   })
-  //   it('should patch an existing package when asked to', function () {
-  //     assert(true)
-  //   })
-  //   after(async function () {
-  //     rimraf.sync('test/working-data')
-  //   })
-  // })
-  // describe('requested minor upgrade on existing package', function () {
-  //   before(async function () {
-  //     init('*minor*bla bla test')
-  //   })
-  //   it('should upgrade minor version of an existing package when asked to', function () {
-  //     assert(true)
-  //   })
-  //   after(async function () {
-  //     rimraf.sync('test/working-data')
-  //   })
-  // })
-  // describe('requested major upgrade on existing package', function () {
-  //   before(async function () {
-  //     init('*major*bla bla test')
-  //   })
-  //   it('should upgrade major version of an existing package when asked to', function () {
-  //     assert(true)
-  //   })
-  //   after(async function () {
-  //     rimraf.sync('test/working-data')
-  //   })
-  // })
+  describe('new package', function () {
+    before(init('kaskadi-definitely-a-fake-package', '1.0.0'))
+    it('should publish a new package', async function () {
+      await test(() => { assert(true) })
+    })
+    after(cleanup)
+  })
+  describe('update package', function () {
+    beforeEach(init(pkgData.name, pkgData.version))
+    it('should automatically patch a package', async function () {
+      await test(() => {
+        const pjson = JSON.parse(readFileSync('package.json', 'utf8'))
+        assert(pjson.version === incrementVersion(pkgData.version, 2))
+      })
+    })
+    it('should patch a package if requested to', async function () {
+      await test(() => {
+        const pjson = JSON.parse(readFileSync('package.json', 'utf8'))
+        assert(pjson.version === incrementVersion(pkgData.version, 2))
+      }, '*patch*bla bla test')
+    })
+    it('should upgrade minor version of a package if requested to', async function () {
+      await test(() => {
+        const pjson = JSON.parse(readFileSync('package.json', 'utf8'))
+        assert(pjson.version === incrementVersion(pkgData.version, 1))
+      }, '*minor*bla bla test')
+    })
+    it('should upgrade major version of a package if requested to', async function () {
+      await test(() => {
+        const pjson = JSON.parse(readFileSync('package.json', 'utf8'))
+        assert(pjson.version === incrementVersion(pkgData.version, 0))
+      }, '*major*bla bla test')
+    })
+    afterEach(cleanup)
+  })
 })
 
-// async function init (commitMsg = '') {
-//   await cp('test/data', 'test/working-data')
-//   await new Promise(resolve => setTimeout(resolve, 300)) // it seems like ncp still does some async tasks even though the ncp function returned so we wait a little until everything is copied
-//   process.chdir('test/working-data')
-//   const pjson = JSON.parse(fs.readFileSync('package.json', 'utf8'))
-//   this.oldPackageName = pjson.name
-//   this.oldVersion = pjson.version
-//   process.env.COMMIT_MSG = commitMsg
-//   // runAction(steps)
-//   process.chdir('../../')
-// }
+function init (name, version) {
+  return () => {
+    const pjson = { name, version }
+    writeFileSync(`${process.cwd()}/test/data/package.json`, JSON.stringify(pjson, null, 2), 'utf8')
+  }
+}
 
-// function cp (src, dest) {
-//   return new Promise((resolve, reject) => {
-//     ncp(src, dest, err => {
-//       if (err) {
-//         reject(err)
-//       } else {
-//         resolve()
-//       }
-//     })
-//   })
-// }
+function cleanup () {
+  writeFileSync(`${process.cwd()}/test/data/package.json`, JSON.stringify({}, null, 2), 'utf8')
+}
+
+function getNpmVersion (name) {
+  return spawnSync('npm', ['view', name, 'version']).stdout.toString().trim()
+}
+
+function incrementVersion (version, i) {
+  const versions = version.split('.').map(Number)
+  return [...versions.slice(0, i), versions[i] + 1, ...versions.slice(i + 1).map(() => 0)].join('.')
+}
+
+async function test (tests = () => {}, commitMsg = '') {
+  process.chdir('test/data')
+  process.env.COMMIT_MSG = commitMsg
+  await runAction(['pre', 'main'])
+    .then(tests)
+    .finally(() => { process.chdir('../../') })
+}
