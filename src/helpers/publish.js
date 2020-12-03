@@ -40,7 +40,7 @@ function upgradeVersion ({ startGroup, endGroup }, updateType) {
 
 function pushChanges ({ startGroup, endGroup, getInput }) {
   const repo = process.env.GITHUB_REPOSITORY
-  startGroup(`Pushing new package.json and package-lock.json to ${repo}`)
+  startGroup(`Updating ${repo}`)
   if (process.env.GITHUB_ACTIONS) {
     console.log('INFO: configurating git user based on action inputs...')
     try {
