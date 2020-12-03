@@ -4,22 +4,19 @@ const path = require('path')
 
 const pathToScript = path.join(__dirname, 'publish.sh')
 
-async function main () {
+function main () {
   startGroup('Determining update type')
   process.env.UPDATE_TYPE = getUpdateType(process.env.COMMIT_MSG)
   endGroup()
 
-  await new Promise((resolve, reject) => {
-    const proc = spawn('bash', [pathToScript])
-    proc.stdout.on('data', log)
-    proc.stderr.on('data', log)
-    proc.on('error', console.log)
-    proc.on('exit', code => {
-      if (code !== 0) {
-        reject(new Error(code))
-      }
-      resolve(code)
-    })
+  const proc = spawn('bash', [pathToScript])
+  proc.stdout.on('data', log)
+  proc.stderr.on('data', log)
+  proc.on('error', console.log)
+  proc.on('exit', code => {
+    if (code !== 0) {
+      throw new Error('An error occured while trying to publish your package...')
+    }
   })
 }
 
@@ -36,6 +33,4 @@ function log (data) {
   console.log(data.toString().trim())
 }
 
-main().catch(() => {
-  process.exit(1)
-})
+main()
