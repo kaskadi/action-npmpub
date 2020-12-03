@@ -1,12 +1,5 @@
 name: 'action-npmpub'
 description: 'This action allows you to automatically publish your packages to NPM.'
-inputs:
-  username:
-    description: 'Username to commit upgraded version files on GitHub'
-    required: true
-  email:
-    description: 'Email to commit upgraded version files on GitHub'
-    required: true
 env:
   NODE_AUTH_TOKEN:
     description: 'NPM token which has **read & publish** permission. See [here](https://docs.npmjs.com/creating-and-viewing-authentication-tokens) for details on how to generate a token. **Recommend storing it in repository secrets!**'

@@ -4,9 +4,6 @@ const { writeFileSync, readFileSync, unlinkSync } = require('fs')
 const { spawnSync } = require('child_process')
 const assert = require('chai').assert
 
-process.env.INPUT_USERNAME = 'John Doe'
-process.env.INPUT_EMAIL = 'j.doe@gmail.com'
-
 const pkgData = {
   name: 'collmex-client',
   version: getNpmVersion('collmex-client')

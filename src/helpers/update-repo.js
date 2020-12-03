@@ -2,26 +2,10 @@ module.exports = (utils) => {
   const repo = process.env.GITHUB_REPOSITORY
   const { startGroup, endGroup } = utils
   startGroup(`Updating ${repo}`)
-  setUser(utils)
   stage(utils)
   commit(utils)
   push(utils, repo)
   endGroup()
-}
-
-function setUser ({ endGroup, getInput, spawnSync }) {
-  if (process.env.GITHUB_ACTIONS) {
-    console.log('INFO: configurating git user based on action inputs...')
-    try {
-      const username = getInput('username', { required: true })
-      const email = getInput('email', { required: true })
-      spawnSync('git', ['config', '--global', 'user.name', username], { stdio: 'inherit' })
-      spawnSync('git', ['config', '--global', 'user.email', email], { stdio: 'inherit' })
-      console.log(`SUCCESS: git user ${username} with email ${email} successfully configurated!`)
-    } catch {
-      endGroup()
-    }
-  }
 }
 
 function stage ({ cliOp }) {
@@ -31,10 +15,13 @@ function stage ({ cliOp }) {
   console.log('SUCCESS: files successfully staged!')
 }
 
-function commit ({ getPjson, cliOp }) {
+function commit ({ getPjson, cliOp, spawnSync }) {
   console.log('INFO: commiting new files...')
   const { version } = getPjson()
-  cliOp('git', ['commit', '-m', `Upgraded to ${version}`])
+  const gpgSign = spawnSync('git', ['config', 'commit.gpgSign']).stdout
+  let commitArgs = ['commit', '-m', `Upgraded to ${version}`]
+  commitArgs = gpgSign.length > 0 ? [...commitArgs.slice(0, 1), '-S', ...commitArgs.slice(1)] : commitArgs
+  cliOp('git', commitArgs)
   console.log('SUCCESS: files successfully commited!')
 }
 
