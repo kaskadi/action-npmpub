@@ -21,7 +21,7 @@ function getVersions ({ startGroup, endGroup, error }) {
     const errorMsg = 'This repository does not seem to be an NPM package'
     error(errorMsg)
     endGroup()
-    throw new Error(`${errorMsg}, aborting...`)
+    process.exit(1)
   }
   const { name, version } = getPjson()
   const npmVersion = spawnSync('npm', ['view', name, 'version']).stdout.toString().trim().replace('v', '')
