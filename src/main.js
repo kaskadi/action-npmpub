@@ -1,30 +1,19 @@
-const { spawn } = require('child_process')
-const path = require('path')
+const core = require('@actions/core')
+const { spawnSync } = require('child_process')
+const cliOp = require('./helpers/cli-op.js')
+const getPjson = require('./helpers/get-pjson.js')
+const utils = { ...core, spawnSync, cliOp, getPjson }
 
-async function main () {
-  const pathToScript = path.join(__dirname, 'publish.sh')
-  const tags = ['*patch*', '*minor*', '*major*']
-  const commitMsgTag = process.env.COMMIT_MSG ? process.env.COMMIT_MSG.slice(0, 7) : '*patch*'
-  process.env.UPDATE_TYPE = tags.includes(commitMsgTag) ? commitMsgTag.replace(new RegExp(/\*/, 'g'), '') : 'patch'
+const getUpdateType = require('./helpers/get-update-type.js')
+const getVersions = require('./helpers/get-versions.js')
+const upgradeVersion = require('./helpers/upgrade-version.js')
+const updateRepo = require('./helpers/update-repo.js')
+const publish = require('./helpers/publish.js')
 
-  await new Promise((resolve, reject) => {
-    const proc = spawn('bash', [pathToScript])
-    proc.stdout.on('data', log)
-    proc.stderr.on('data', log)
-    proc.on('error', console.log)
-    proc.on('exit', code => {
-      if (code !== 0) {
-        reject(new Error(code))
-      }
-      resolve(code)
-    })
-  })
+const updateType = getUpdateType(utils, process.env.COMMIT_MSG)
+const { version, npmVersion } = getVersions(utils)
+if (version === npmVersion) {
+  upgradeVersion(utils, updateType)
+  updateRepo(utils)
 }
-
-function log (data) {
-  console.log(data.toString().trim())
-}
-
-main().catch(() => {
-  process.exit(1)
-})
+publish(utils)
