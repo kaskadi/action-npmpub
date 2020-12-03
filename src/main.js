@@ -1,11 +1,13 @@
 const { spawn } = require('child_process')
+const { startGroup, endGroup } = require('@actions/core')
 const path = require('path')
 
+const pathToScript = path.join(__dirname, 'publish.sh')
+
 async function main () {
-  const pathToScript = path.join(__dirname, 'publish.sh')
-  const tags = ['*patch*', '*minor*', '*major*']
-  const commitMsgTag = process.env.COMMIT_MSG ? process.env.COMMIT_MSG.slice(0, 7) : '*patch*'
-  process.env.UPDATE_TYPE = tags.includes(commitMsgTag) ? commitMsgTag.replace(new RegExp(/\*/, 'g'), '') : 'patch'
+  startGroup('Determining update type')
+  process.env.UPDATE_TYPE = getUpdateType(process.env.COMMIT_MSG)
+  endGroup()
 
   await new Promise((resolve, reject) => {
     const proc = spawn('bash', [pathToScript])
@@ -19,6 +21,15 @@ async function main () {
       resolve(code)
     })
   })
+}
+
+function getUpdateType (commitMsg) {
+  const tags = ['*patch*', '*minor*', '*major*']
+  console.log('INFO: determining update type from commit message pattern...')
+  const commitMsgTag = commitMsg ? commitMsg.slice(0, 7) : '*patch*'
+  const updateType = tags.includes(commitMsgTag) ? commitMsgTag.replace(new RegExp(/\*/, 'g'), '') : 'patch'
+  console.log(`SUCCESS: update type looks to be ${updateType}`)
+  return updateType
 }
 
 function log (data) {
