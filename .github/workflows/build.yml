@@ -31,13 +31,19 @@ jobs:
       uses: github/codeql-action/autobuild@v1
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
-  build:
+  coverage:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: npm i
-    - name: Test
-      run: npm test
+    - name: Generate coverage report
+      run: npm run coverage
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+    - name: Upload report to Code Climate
+      uses: kaskadi/action-cc-reporter@master
+      env:
+        CC_TEST_REPORTER_ID: ${{ secrets.REPORTER_ID }}
+        GIT_BRANCH: ${{ github.base_ref }}
+        GIT_COMMIT: ${{ github.sha }}
