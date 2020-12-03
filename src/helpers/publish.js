@@ -20,6 +20,7 @@ function getVersions ({ startGroup, endGroup, error }) {
   if (!existsSync('package.json')) {
     const errorMsg = 'This repository does not seem to be an NPM package'
     error(errorMsg)
+    endGroup()
     throw new Error(`${errorMsg}, aborting...`)
   }
   const { name, version } = getPjson()
@@ -42,11 +43,15 @@ function pushChanges ({ startGroup, endGroup, getInput }) {
   startGroup(`Pushing new package.json and package-lock.json to ${repo}`)
   if (process.env.GITHUB_ACTIONS) {
     console.log('INFO: configurating git user based on action inputs...')
-    const username = getInput('username', { required: true })
-    const email = getInput('email', { required: true })
-    spawnSync('git', ['config', '--global', 'user.name', username], { stdio: 'inherit' })
-    spawnSync('git', ['config', '--global', 'user.email', email], { stdio: 'inherit' })
-    console.log(`SUCCESS: git user ${username} with email ${email} successfully configurated!`)
+    try {
+      const username = getInput('username', { required: true })
+      const email = getInput('email', { required: true })
+      spawnSync('git', ['config', '--global', 'user.name', username], { stdio: 'inherit' })
+      spawnSync('git', ['config', '--global', 'user.email', email], { stdio: 'inherit' })
+      console.log(`SUCCESS: git user ${username} with email ${email} successfully configurated!`)
+    } catch {
+      endGroup()
+    }
   }
   console.log('INFO: staging package.json and package-lock.json files...')
   cliOp('git', ['add', 'package.json'])
