@@ -2,26 +2,10 @@ module.exports = (utils) => {
   const repo = process.env.GITHUB_REPOSITORY
   const { startGroup, endGroup } = utils
   startGroup(`Updating ${repo}`)
-  setUser(utils)
   stage(utils)
   commit(utils)
   push(utils, repo)
   endGroup()
-}
-
-function setUser ({ endGroup, getInput, spawnSync }) {
-  if (process.env.GITHUB_ACTIONS) {
-    console.log('INFO: configurating git user based on action inputs...')
-    try {
-      const username = getInput('username', { required: true })
-      const email = getInput('email', { required: true })
-      spawnSync('git', ['config', '--global', 'user.name', username], { stdio: 'inherit' })
-      spawnSync('git', ['config', '--global', 'user.email', email], { stdio: 'inherit' })
-      console.log(`SUCCESS: git user ${username} with email ${email} successfully configurated!`)
-    } catch {
-      endGroup()
-    }
-  }
 }
 
 function stage ({ cliOp }) {
