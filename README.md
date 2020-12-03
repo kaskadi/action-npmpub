@@ -28,21 +28,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: {YOUR-STEP-NAME}
       uses: kaskadi/action-npmpub@master
-      with:
-        username: {USERNAME-VALUE}
-        email: {EMAIL-VALUE}
       env:
         NODE_AUTH_TOKEN: {NODE_AUTH_TOKEN-VALUE}
         COMMIT_MSG: ${{ github.event.head_commit.message }}
 ```
 
 **Note:** everything contained in single curly brackets (`{ }`) needs to be replaced by your desired values
-
-**Inputs:**
-|    Input   | Required | Default | Description                                         |
-| :--------: | :------: | :-----: | :-------------------------------------------------- |
-| `username` |  `true`  |         | Username to commit upgraded version files on GitHub |
-|   `email`  |  `true`  |         | Email to commit upgraded version files on GitHub    |
 
 **Environment variables:**
 |      Variable     | Required | Description                                                                                                                                                                                                              |
@@ -51,3 +42,26 @@ jobs:
 |    `COMMIT_MSG`   |  `true`  | Message of the commit that triggers the action. **\/!\\ This should not be changed \/!\\**                                                                                                                               |
 
 By default, this action will publish a new _patch_ for your package. If you would like to publish a new _major_ (resp. _minor_) version for this package, just prepend your commit message with `*major*` (resp. `*minor*`). This works as well with `*patch*` even though it's not required.
+
+**In order to sign the commit for your new `package.json` and `package-lock.json` files via GPG**: add the following `step` before the actual publishing step:
+```yaml
+    - name: Import GPG key
+      uses: crazy-max/ghaction-import-gpg@v2
+      with:
+        git_user_signingkey: true
+        git_commit_gpgsign: true
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.{YOUR-GPG-PRIVATE-KEY} }}
+        PASSPHRASE: ${{ secrets.{YOUR-GPG-PRIVATE-KEY-PASSPHRASE} }}
+```
+
+**If you do not need to sign your commit via GPG**: simply replace the `Import GPG key` step of the job by:
+```yaml
+    - name: Configure GitHub user
+      run: |
+        git config --global user.name $GH_USER_NAME
+        git config --global user.email $GH_USER_EMAIL
+      env:
+        GH_USER_NAME: ${{ secrets.{YOUR-GITHUB-USER-NAME} }}
+        GH_USER_EMAIL: ${{ secrets.{YOUR-GITHUB-USER-EMAIL} }}
+```
